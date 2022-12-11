@@ -1,5 +1,7 @@
 # GoveeSync
-This code will allow you to use Govee internal UDP api to control your device as well as sync what is on the screen.
+This code will allow you to use Govee internal UDP api to control your device as well as sync what is on the screen. <strong>You need to install the below libs before running</strong>:<br>
+pip install wmi
+pip install pywin32
 
 # Constants
 Update the device IP of the device you want to control on line 19. Lines 20 and 21, for now sadly, need to hardcode the resolution of the game you are playing at. I tried to fix this by getting the window size, but it was not reliable. 

@@ -10,6 +10,8 @@ import socket
 import json
 import math
 import threading
+from ctypes import *
+import ctypes.wintypes
 
 #Globals, you should not change these, leave them as is.
 appChange = True
@@ -17,8 +19,6 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 #Constants, you should change these.
 GoveeDeviceIP = '10.1.1.43' 
-windowWidth = 3840
-windowHeight = 2160
 boxSize = 50
 
 
@@ -93,8 +93,6 @@ def DetectFocusChange():
             appChange = True
 
 def GameTime():
-    global windowWidth
-    global windowHeight
     global appChange
     global boxSize
     lastColor = None
@@ -134,10 +132,18 @@ def GameTime():
                 whndl = win32gui.GetForegroundWindow()
                 pid =(win32process.GetWindowThreadProcessId(whndl))[1]                
                 handle = win32gui.GetWindowDC(whndl)       
-                rect = win32gui.GetWindowRect(whndl)  
                 txt = win32gui.GetWindowText(whndl)    
-                # windowWidth = rect[2] - rect[0]
-                # windowHeight = rect[3] - rect[1]
+                rect = ctypes.wintypes.RECT()
+                DWMWA_EXTENDED_FRAME_BOUNDS = 9
+                ctypes.windll.dwmapi.DwmGetWindowAttribute(
+                    ctypes.wintypes.HWND(whndl),
+                    ctypes.wintypes.DWORD(DWMWA_EXTENDED_FRAME_BOUNDS),
+                    ctypes.byref(rect),
+                    ctypes.sizeof(rect)
+                    )
+                size = (rect.right - rect.left, rect.bottom - rect.top)                
+                windowWidth = size[0]
+                windowHeight = size[1]
                 centerWidth = int(windowWidth / 2)
                 centerHeight = int(windowHeight / 2)
                 upperLeft = (centerWidth-boxSize,centerHeight-boxSize)

@@ -9,7 +9,8 @@ Update the device IP of the device you want to control on line 21.
 # Testing / Searching for devices
 Download UDPReceiver.py and UDPSender.py
 <ol>
-<li>Start CMD prompt, navigate to the folder where you downloaded the above files. Then type: python UDPReceiver.py</li>
+<li>Start CMD prompt, navigate to the folder where you downloaded the above files. Then type: python UDPReceiver.py<br>This should start a UDP multicast listener on port 4002</li>
+<li>Once the listener is started open another CMD prompt. Navigate to the folder, and type: python UDPSender.py<br>This should output any Govee devices found to the shell.</li>
 </ol>
 
 # Supported Commands

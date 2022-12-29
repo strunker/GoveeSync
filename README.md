@@ -6,6 +6,12 @@ pip install pywin32
 # Constants
 Update the device IP of the device you want to control on line 21.
 
+# Testing / Searching for devices
+Download UDPReceiver.py and UDPSender.py
+<ol>
+<li>Start CMD prompt, navigate to the folder where you downloaded the above files. Then type: python UDPReceiver.py</li>
+</ol>
+
 # Supported Commands
 
 To turn the device on/off:<br>

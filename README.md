@@ -13,7 +13,7 @@ Download UDPReceiver.py and UDPSender.py
 <li>Once the listener is started open another CMD prompt. Navigate to the folder, and type: python UDPSender.py<br>This should output any Govee devices found to the shell.</li>
 </ol>
 
-# Supported Commands
+# Supported Commands - All of these are implemented within GameSync.py
 
 To turn the device on/off:<br>
 GoveeInternalControl("On")<br>

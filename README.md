@@ -12,7 +12,7 @@ If you don't want to get into the different functions and you just want somethin
 <ol>
 <li>Replace line 10 with your device IP, for example: DeviceIP = "192.168.0.1"</li>
 <li>Open cmd prompt then simply run with - python c:\PathToFile\GameSync2023.py</li>
-<li>You can simply do Ctrl + C to exit.</li>
+<li>You can simply do Ctrl + C to exit when you want to end the light sync.</li>
 </ol>
 
 # Supported Commands - All of the below commands are implemented within GameSync.py

@@ -6,6 +6,12 @@ pip install pywin32
 # Constants
 Update the device IP of the device you want to control on line 21.
 
+# No Frills Simplified Code
+
+If you don't want to get into the different functions and you just want something simple you can run and have work, just run GameSync2023.py file. 
+Open cmd prompt then simply run with - python pathtfile\SameSync2023.py
+You can simply do Ctrl + C to exit.
+
 # Supported Commands - All of the below commands are implemented within GameSync.py
 
 To turn the device on/off:<br>

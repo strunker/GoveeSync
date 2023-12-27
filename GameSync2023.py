@@ -6,8 +6,76 @@ import psutil
 import json
 import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+import sys,os
+DeviceIP = "10.1.1.43" #INSERT YOUR DEVICE IP
 
-def GoveeGameTime(DeviceIP):
+def GoveeLocalControl(Command,brightness=0,color=None,Loop=False,UDP_IP='',UDP_PORT=4003,printStatus=True,errorCount=0):
+    lastColor = None
+    global sock
+
+    def SendCommand(message,individualIP,UDP_PORT):
+        jsonResult = json.dumps(message)
+        print("Sending: {} to {}".format(Command,individualIP))
+        sock.sendto(bytes(jsonResult, "utf-8"), (individualIP, UDP_PORT))
+
+    try:
+        if Command == "Color":      
+                message = {
+                    "msg":{
+                        "cmd":"colorwc",
+                        "data":{
+                            "color":{"r":color[0],"g":color[1],"b":color[2]},
+                            "colorTemInKelvin":0
+                        }    
+                    }
+                }    
+        elif Command == "On":
+            message = {
+                "msg":{
+                    "cmd":"turn",
+                    "data":{
+                        "value":1,
+                    }    
+                }
+            }
+        elif Command == "Off":
+            message = {
+                "msg":{
+                    "cmd":"turn",
+                    "data":{
+                        "value":0,
+                    }    
+                }
+            }                        
+        elif Command == "BrightLevel":
+            message = {
+                "msg":{
+                    "cmd":"brightness",
+                    "data":{
+                        "value":brightness,
+                    }    
+                }
+            }  
+        else:
+            raise ValueError("Bad Command: {}".format(Command))
+
+        #To print or not to print
+        if Loop == False and printStatus == True:
+            print("Govee Internal Control: {}".format(Command)) 
+        
+        #Send command from above
+        SendCommand(message,UDP_IP,UDP_PORT)
+    except Exception as E:        
+        errorCount += 1
+        if errorCount > 3:
+            print("Govee Internal Control Error Recursion Exit: {}".format(str(E)))
+            return
+        else:
+            print("Govee Internal Control Error: {}".format(str(E)))
+            return GoveeLocalControl(Command,brightness=0,color=None,Loop=False,UDP_IP='',UDP_PORT=4003,printStatus=True,errorCount=errorCount)
+
+
+def main(DeviceIP):
     global boxSize
     global sock
     errorNotified = False
@@ -39,71 +107,12 @@ def GoveeGameTime(DeviceIP):
     # Define the value of SRCCOPY manually
     SRCCOPY = 0xCC0020    
 
-    def GoveeInternalControl(Command,brightness=0,color=None,Loop=False,UDP_IP='',UDP_PORT=4003,printStatus=True):
-        lastColor = None
-        global sock
-
-        def SendCommand(message,individualIP,UDP_PORT):
-            jsonResult = json.dumps(message)
-            print("Sending: {} to {}".format(Command,individualIP))
-            sock.sendto(bytes(jsonResult, "utf-8"), (individualIP, UDP_PORT))
-
-        try:
-            if Command == "Color":      
-                    message = {
-                        "msg":{
-                            "cmd":"colorwc",
-                            "data":{
-                                "color":{"r":color[0],"g":color[1],"b":color[2]},
-                                "colorTemInKelvin":0
-                            }    
-                        }
-                    }    
-            elif Command == "On":
-                message = {
-                    "msg":{
-                        "cmd":"turn",
-                        "data":{
-                            "value":1,
-                        }    
-                    }
-                }
-            elif Command == "Off":
-                message = {
-                    "msg":{
-                        "cmd":"turn",
-                        "data":{
-                            "value":0,
-                        }    
-                    }
-                }                        
-            elif Command == "BrightLevel":
-                message = {
-                    "msg":{
-                        "cmd":"brightness",
-                        "data":{
-                            "value":brightness,
-                        }    
-                    }
-                }  
-            else:
-                raise ValueError("Bad Command: {}".format(Command))
-
-            #To print or not to print
-            if Loop == False and printStatus == True:
-                print("Govee Internal Control: {}".format(Command)) 
-            
-            #Send command from above
-            for individualIP in UDP_IP:
-                SendCommand(message,individualIP,UDP_PORT)        
-        except Exception as E:
-            print("Govee Internal Control Error: {}".format(str(E)))
 
    
     try:
         print("Game Time Function: Turning Lights On")       
-        GoveeInternalControl(Command="On",UDP_IP=DeviceIP) 
-        GoveeInternalControl(Command="BrightLevel",UDP_IP=DeviceIP,brightness=100)
+        GoveeLocalControl(Command="On",UDP_IP=DeviceIP) 
+        GoveeLocalControl(Command="BrightLevel",UDP_IP=DeviceIP,brightness=100)
         while(1):            
             # Copy the pixel color from the screen to the bitmap
             gdi32.BitBlt(mem_dc, 0, 0, 1, 1, screen_dc, middle_x, middle_y, SRCCOPY)
@@ -150,7 +159,7 @@ def GoveeGameTime(DeviceIP):
         print("Game Time Function: Turning Lights Off. Thread Is Dead.") 
         gdi32.DeleteDC(mem_dc)
         gdi32.DeleteDC(screen_dc)
-        GoveeInternalControl(Command="Off",UDP_IP=DeviceIP)
+        GoveeLocalControl(Command="Off",UDP_IP=DeviceIP)
         raise NameError("NormalReturn")
     except Exception as E:
         if "NormalReturn" in str(E):
@@ -158,8 +167,16 @@ def GoveeGameTime(DeviceIP):
             return "NormalExit"
         else:
             print("Govee Game Time Loop Error: {}".format(str(E)))
-            GoveeInternalControl(Command="Off",UDP_IP=DeviceIP)
+            GoveeLocalControl(Command="Off",UDP_IP=DeviceIP)
             return "Error"        
 
+try:
+    print("Press Ctrl + C To Quit (Lights Should Turn Off)\n\n")
+    main(DeviceIP)
+except KeyboardInterrupt:
+    GoveeLocalControl(Command="Off",UDP_IP=DeviceIP) 
+    try:
+        sys.exit(130)
+    except SystemExit:
+        os._exit(130)
 
-GoveeGameTime("10.1.1.43")

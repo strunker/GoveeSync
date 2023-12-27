@@ -13,6 +13,7 @@ If you don't want to get into the different functions and you just want somethin
 <li>Open cmd prompt then simply run with - python c:\PathToFile\SameSync2023.py</li>
 <li>You can simply do Ctrl + C to exit.</li>
 </ol>
+
 # Supported Commands - All of the below commands are implemented within GameSync.py
 
 To turn the device on/off:<br>

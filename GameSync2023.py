@@ -2,7 +2,6 @@ from threading import Thread
 import ctypes
 from ctypes import *
 import ctypes.wintypes
-import psutil
 import json
 import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,10 +84,9 @@ def main(DeviceIP):
     user32 = ctypes.windll.user32
     gdi32 = ctypes.windll.gdi32
 
-    # screen_width = user32.GetSystemMetrics(0)
-    screen_width = 11520
-    # screen_height = user32.GetSystemMetrics(1)
-    screen_height = 2160
+    screen_width = user32.GetSystemMetrics(0)
+    screen_height = user32.GetSystemMetrics(1)
+    print("Using Screen Dimensions: {} {}".format(screen_width,screen_height))
     middle_x = screen_width // 2
     middle_y = screen_height // 2
 

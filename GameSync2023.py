@@ -71,7 +71,7 @@ def GoveeLocalControl(Command,brightness=0,color=None,Loop=False,UDP_IP='',UDP_P
             return
         else:
             print("Govee Internal Control Error: {}".format(str(E)))
-            return GoveeLocalControl(Command,brightness=0,color=None,Loop=False,UDP_IP='',UDP_PORT=4003,printStatus=True,errorCount=errorCount)
+            return GoveeLocalControl(Command,brightness,color,Loop,UDP_IP,UDP_PORT,printStatus,errorCount)
 
 
 def main(DeviceIP):

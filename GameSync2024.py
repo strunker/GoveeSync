@@ -221,19 +221,7 @@ def main(DeviceIP):
                 else:
                     # print(pixelColor)
                     lastColor = pixelColor1
-                    errorNotified = False
-
-                    # message = {
-                    #             "msg":{
-                    #                 "cmd":"colorwc",
-                    #                 "data":{
-                    #                     "color":{"r":red,"g":green,"b":blue},
-                    #                     "colorTemInKelvin":0
-                    #                 }    
-                    #             }
-                    #         }                        
-                    # # print("Sending: {}".format(Command))
-                    # sock.sendto(bytes(json.dumps(message), "utf-8"), (DeviceIP, 4003))    
+                    errorNotified = False   
                     GoveeLocalControl(Command="SegmentColor",UDP_IP=DeviceIP,color=(pixelColor1,pixelColor2))
             except Exception as E:
                 print("Govee Game Time Inner Loop Error: {}".format(str(E)))
